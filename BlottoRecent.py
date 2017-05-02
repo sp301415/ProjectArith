@@ -126,5 +126,3 @@ profileA = distributeA(profileA, leftoverA)
 profileB = distributeB(profileB, leftoverB)
 print (profileA)
 print (profileB)
-
-print (poolA)
