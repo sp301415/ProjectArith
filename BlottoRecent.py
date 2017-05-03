@@ -1,18 +1,11 @@
 import random
 import math
-profileA = []
-profileB = []
-valueA = []
-valueB = []
-scoreA = 0
-scoreB = 0
-poolA = []
-poolB = []
-n = int(input("Total Troops: ") )
-k = int(input("Total Battlefields: "))
-v = int(input("Total Value: "))
 
+TROOP_TOTAL = int(input("Total Troops: "))
+BATTLEFIELD_TOTAL = int(input("Total Battlefields: "))
+VALUE_TOTAL = int(input("Total Value: "))
 
+'''
 def troopProfile (n,k):
         i=0
         while i < int(k) :
@@ -42,21 +35,22 @@ def valueProfile (v,k):
             return valueA
             return valueB
     # value Profile Build
+    '''
 
-def calculateScore(valueA, valueB, profileA, profileB, scoreA, scoreB, k):
-        for i in range(0, k):
-                 if(profileA[i] > profileB[i]) :
-                     scoreA = scoreA + valueA[i]
-                 if(profileA[i] == profileB[i]):
-                     scoreA = scoreA + (valueA[i] * 0.5)
-                     scoreB = scoreB + (valueB[i] * 0.5)
-                 if(profileA[i] < profileB[i]):
-                     scoreB = scoreB + valueB[i]
-        
-        return (scoreA, scoreB)
-    # calculate score once
 
-def reduceOversupply(profileA, profileB):
+def game(troop_profile, value_profile, score):  # calculates score
+    for i in range(0, len(troop_profile[0])):
+        if troop_profile[0][i] > troop_profile[1][i]:
+            score[0] += value_profile[0][i]
+        elif troop_profile[0][i] == troop_profile[1][i]:
+            score[0] += value_profile[0][i] * 0.5
+            score[1] += value_profile[1][i] * 0.5
+        else:
+            score[1] += value_profile[1][i]
+    return score
+
+
+def reduce_oversupply(profileA, profileB):
     global leftoverA
     global leftoverB
     leftoverA = 0
@@ -72,7 +66,7 @@ def reduceOversupply(profileA, profileB):
     return (profileA, profileB)
     # Reduce Oversupply Task
 
-def distributeA(profileA, leftoverA):
+def distribute_A(profileA, leftoverA):
     while leftoverA > 0:
             j = random.randint(0,k-1)
             profileA[j] = profileA[j] + 1
@@ -81,7 +75,7 @@ def distributeA(profileA, leftoverA):
             return profileA
     # Distribute leftover randomly - A
 
-def distributeB(profileB, leftoverB):
+def distribute_B(profileB, leftoverB):
     while leftoverB > 0:
             j = random.randint(0,k-1)
             profileB[j] = profileB[j] + 1
@@ -90,7 +84,7 @@ def distributeB(profileB, leftoverB):
             return profileB
     # DIStribute leftover randomly - B
 
-def spanPoolA(profileA, leftoverA, poolA):
+def span_pool_A(profileA, leftoverA, poolA):
     i = 0
     buffA = []
     buffA = profileA
@@ -99,12 +93,25 @@ def spanPoolA(profileA, leftoverA, poolA):
         poolA.append(distributeA(profileA,leftoverA))
         
     return poolA
+
+
+def main():
+    troop_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
+    value_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
+    gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
+    score = []
+
+    print(troop_profile)
+
+
+main()
+
+
+
     
+'''
 
-
-troopProfile(n,k)
-valueProfile(v,k)
-scoreA, scoreB = calculateScore(valueA, valueB, profileA, profileB, scoreA, scoreB, k)
+scoreA, scoreB = calculate_score(valueA, valueB, profileA, profileB, scoreA, scoreB, k)
 print ("Initial Troop Profile of A is")
 print (profileA)
 print ("Initial Troop Profile of B is")
@@ -118,11 +125,14 @@ print ("each Score")
 print (scoreA)
 print (scoreB)
 
-profileA, profileB = reduceOversupply(profileA, profileB)
+profileA, profileB = reduce_oversupply(profileA, profileB)
 leftoverA, leftoverB = (leftoverA, leftoverB)
 print (profileA)
 print (profileB)
-profileA = distributeA(profileA, leftoverA)
-profileB = distributeB(profileB, leftoverB)
+profileA = distribute_A(profileA, leftoverA)
+profileB = distribute_B(profileB, leftoverB)
 print (profileA)
 print (profileB)
+
+print (poolA)
+'''
