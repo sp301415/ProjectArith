@@ -53,7 +53,7 @@ def main():
     value_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
     value_profile[0] = partition(VALUE_TOTAL, BATTLEFIELD_TOTAL)
     value_profile[1] = partition(VALUE_TOTAL, BATTLEFIELD_TOTAL)
-    gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
+    # gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
 
     print(troop_profile)
     print(value_profile)
