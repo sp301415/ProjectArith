@@ -1,9 +1,11 @@
 import random
 import math
+import statistics
+from collections import defaultdict
 
 
 TROOP_TOTAL = int(input("Total Troops: "))
-BATTLEFIELD_TOTAL = int(input("Total Battlefied: "))
+BATTLEFIELD_TOTAL = int(input("Total Battlefield: "))
 VALUE_TOTAL = int(input("Total Value: "))
 
 
@@ -36,7 +38,6 @@ def reduce_improve(troop_profile, player):
         if troop_profile[player][i] > troop_profile[opponent][i] + 1:
             leftover += troop_profile[player][i] - troop_profile[opponent][i] - 1
             troop_profile[player][i] = troop_profile[opponent][i] + 1
-    print(leftover)
 
     # improve profile
     while leftover > 0:
@@ -46,17 +47,39 @@ def reduce_improve(troop_profile, player):
     return troop_profile
 
 
+def generous_mode (troop_profile, value_profile, player):
+    opponent = player ^ 1
+    opponent_indifferent = []
+
+    indifferent = defaultdict(list)
+    for i, item in enumerate(value_profile[player]):
+        indifferent[item].append(i)
+    indifferent = {k: v for k, v in indifferent.items() if len(v) > 1}  # thanks to stackoverflow
+
+    for x in range(indifferent.keys()):
+        for y in list(indifferent.values()[x]):
+
+
+
+
 def main():
     troop_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
     troop_profile[0] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
     troop_profile[1] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
-    value_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
-    value_profile[0] = partition(VALUE_TOTAL, BATTLEFIELD_TOTAL)
-    value_profile[1] = partition(VALUE_TOTAL, BATTLEFIELD_TOTAL)
-    # gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
 
-    print(troop_profile)
-    print(value_profile)
-    print(game(troop_profile, value_profile))
+    value_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
+    value_profile[0] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
+    value_profile[1] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
+    for i in range(BATTLEFIELD_TOTAL):
+        value_profile[0][i] += 1
+        value_profile[1][i] += 1
+
+    gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
+
+    indifferent = defaultdict(list)
+    for i, item in enumerate(value_profile[0]):
+        indifferent[item].append(i)
+    indifferent = {k: v for k, v in indifferent.items() if len(v) > 1}  # thanks to stackoverflow
+    print(list(indifferent.values())[0])
 
 main()
