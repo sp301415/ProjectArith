@@ -32,7 +32,7 @@ def game(troop_profile, value_profile):  # calculates score
 def reduce_improve(troop_profile, player):
     leftover = 0
     opponent = player ^ 1
-
+    global troop_initial = troop_profile
     # reduce oversupply
     for i in range(BATTLEFIELD_TOTAL):
         if troop_profile[player][i] > troop_profile[opponent][i] + 1:
@@ -45,12 +45,13 @@ def reduce_improve(troop_profile, player):
         leftover -= 1
 
     return troop_profile
+    return troop_initial
 
 
 def generous_mode (troop_profile, value_profile, player):
     opponent = player ^ 1
     opponent_indifferent = []
-    score = 0;
+    score = 0
 
     indifferent = defaultdict(list)
     for i, item in enumerate(value_profile[player]):
@@ -61,9 +62,21 @@ def generous_mode (troop_profile, value_profile, player):
         for y in list(indifferent.values())[x]:
             opponent_indifferent.append(troop_profile[player][y])
         score += statistics.stdev(opponent_indifferent)
-        opponent_indifferent.clear()  # Generous Mode Agorithm - to be determined
+        opponent_indifferent.clear()  # Generous Mode Algorithm - to be determined
 
     return score
+
+def greedy_mode (troop_initial, troop_profile, value_profile, player):
+    gscore = []
+    weight_greedy = 100 # greedyweight- to be determined by several tests
+    
+    for i in range(len(gene_pool))
+        gscore[0] = gscore[0] + game(gene_pool[0][i], value_profile)[0] - game(troop_initial[0], value_profile)[0]
+        gscore[1] = gscore[0] + game(gene_pool[1][i], value_profile)[1] - game(troop_initial[1], value_profile)[1]
+    gscore[0] = gscore[0] * weight_greedy
+    gscore[1] = gscore[1] * weight_greedy            
+    return gscore
+
 
 
 def main():
@@ -77,7 +90,6 @@ def main():
     for i in range(BATTLEFIELD_TOTAL):
         value_profile[0][i] += 1
         value_profile[1][i] += 1
-
     gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
 
 
