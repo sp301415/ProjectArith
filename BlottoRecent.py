@@ -32,7 +32,7 @@ def game(troop_profile, value_profile):  # calculates score
 def reduce_improve(troop_profile, player):
     leftover = 0
     opponent = player ^ 1
-    global troop_initial = troop_profile
+
     # reduce oversupply
     for i in range(BATTLEFIELD_TOTAL):
         if troop_profile[player][i] > troop_profile[opponent][i] + 1:
@@ -45,11 +45,9 @@ def reduce_improve(troop_profile, player):
         leftover -= 1
 
     return troop_profile
-    return troop_initial
 
 
-def generous_mode (troop_profile, value_profile, player):
-    opponent = player ^ 1
+def generous_mode(troop_profile, value_profile, player):
     opponent_indifferent = []
     score = 0
 
@@ -66,17 +64,21 @@ def generous_mode (troop_profile, value_profile, player):
 
     return score
 
-def greedy_mode (troop_initial, troop_profile, value_profile, player):
-    gscore = []
-    weight_greedy = 100 # greedyweight- to be determined by several tests
-    
-    for i in range(len(gene_pool))
-        gscore[0] = gscore[0] + game(gene_pool[0][i], value_profile)[0] - game(troop_initial[0], value_profile)[0]
-        gscore[1] = gscore[0] + game(gene_pool[1][i], value_profile)[1] - game(troop_initial[1], value_profile)[1]
-    gscore[0] = gscore[0] * weight_greedy
-    gscore[1] = gscore[1] * weight_greedy            
-    return gscore
 
+def greedy_mode(troop_profile, value_profile, gene_pool, player):
+    gene_score = []
+    troop_gene = [[], []]
+    opponent = player ^ 1
+    troop_gene[1] = troop_profile[opponent]
+    weight_greedy = 100  # greedy weight- to be determined by several tests
+    
+    for i in range(len(gene_pool)):
+        troop_gene[0] = gene_pool[i]
+        gene_score[i] += (game(troop_gene, value_profile)[player] -
+                          game(troop_profile, value_profile)[player]) * weight_greedy
+        # add difference of score and multiply weight
+
+    return gene_score
 
 
 def main():
@@ -90,7 +92,10 @@ def main():
     for i in range(BATTLEFIELD_TOTAL):
         value_profile[0][i] += 1
         value_profile[1][i] += 1
+
     gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
 
 
-main()
+if __name__ == "__main__":
+    main()
+
