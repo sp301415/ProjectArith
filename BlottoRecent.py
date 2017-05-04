@@ -50,16 +50,20 @@ def reduce_improve(troop_profile, player):
 def generous_mode (troop_profile, value_profile, player):
     opponent = player ^ 1
     opponent_indifferent = []
+    score = 0;
 
     indifferent = defaultdict(list)
     for i, item in enumerate(value_profile[player]):
         indifferent[item].append(i)
     indifferent = {k: v for k, v in indifferent.items() if len(v) > 1}  # thanks to stackoverflow
 
-    for x in range(indifferent.keys()):
-        for y in list(indifferent.values()[x]):
+    for x in range(len(indifferent.keys())):
+        for y in list(indifferent.values())[x]:
+            opponent_indifferent.append(troop_profile[player][y])
+        score += statistics.stdev(opponent_indifferent)
+        opponent_indifferent.clear()  # Generous Mode Agorithm - to be determined
 
-
+    return score
 
 
 def main():
@@ -76,10 +80,5 @@ def main():
 
     gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
 
-    indifferent = defaultdict(list)
-    for i, item in enumerate(value_profile[0]):
-        indifferent[item].append(i)
-    indifferent = {k: v for k, v in indifferent.items() if len(v) > 1}  # thanks to stackoverflow
-    print(list(indifferent.values())[0])
 
 main()
