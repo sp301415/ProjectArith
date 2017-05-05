@@ -40,16 +40,18 @@ def reduce_improve(troop_profile, player):
             troop_profile[player][i] = troop_profile[opponent][i] + 1
 
     # improve profile
-    while leftover > 0:
+    for i in range(leftover):
         troop_profile[player][random.randrange(0, BATTLEFIELD_TOTAL)] += 1
-        leftover -= 1
 
     return troop_profile
 
 
 def generous_mode(troop_profile, value_profile, player):
     opponent_indifferent = []
+    opponent = player ^ 1
     score = 0
+    troop_profile_indifferent_total = 0
+    opponent_indifferent_total = 0
 
     indifferent = defaultdict(list)
     for i, item in enumerate(value_profile[player]):
@@ -58,44 +60,65 @@ def generous_mode(troop_profile, value_profile, player):
 
     for x in range(len(indifferent.keys())):
         for y in list(indifferent.values())[x]:
-            opponent_indifferent.append(troop_profile[player][y])
+            troop_profile_indifferent_total += troop_profile[y]
+            opponent_indifferent_total += value_profile[opponent][y]
+
+        for y in list(indifferent.values())[x]:
+            opponent_indifferent.append((troop_profile[y] / troop_profile_indifferent_total)
+                                        + (value_profile[opponent][y] / opponent_indifferent_total))
         score += statistics.stdev(opponent_indifferent)
-        opponent_indifferent.clear()  # Generous Mode Algorithm - to be determined
+        opponent_indifferent.clear()
+        troop_profile_indifferent_total = 0
+        opponent_indifferent_total = 0  # Generous Mode Algorithm - to be determined
+
+    return -score
+
+
+def greedy_mode(troop_profile_init, troop_profile, value_profile, player):
+    score = 0
+    troop_profile_new = [[], []]
+    opponent = player ^ 1
+    troop_profile_new[player] = troop_profile
+    troop_profile_new[opponent] = troop_profile_init[opponent]
+    weight_greedy = 1 # greedy weight- to be determined by several tests
+
+    score += (game(troop_profile_new, value_profile)[player]
+                - game(troop_profile_init, value_profile)[player]) * weight_greedy
+    # add difference of score and multiply weight
 
     return score
 
 
-def greedy_mode(troop_profile, value_profile, gene_pool, player):
-    gene_score = []
-    troop_gene = [[], []]
-    opponent = player ^ 1
-    troop_gene[1] = troop_profile[opponent]
-    weight_greedy = 100  # greedy weight- to be determined by several tests
-    
-    for i in range(len(gene_pool)):
-        troop_gene[0] = gene_pool[i]
-        gene_score[i] += (game(troop_gene, value_profile)[player] -
-                          game(troop_profile, value_profile)[player]) * weight_greedy
-        # add difference of score and multiply weight
-
-    return gene_score
-
-
 def main():
-    troop_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
+    troop_profile = [[], []]
     troop_profile[0] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
     troop_profile[1] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
 
-    value_profile = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(2)]
+    # troop_profile = [[3, 0, 0], [0, 2, 1]]  # manually
+
+    value_profile = [[], []]
     value_profile[0] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
     value_profile[1] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
     for i in range(BATTLEFIELD_TOTAL):
         value_profile[0][i] += 1
         value_profile[1][i] += 1
 
-    gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
+    # value_profile = [[2, 1, 1], [1, 1, 2]]  # manually
 
+    gene_pool = [[], [], [], [], [], [], [], [], [], []]
+    score = []
+
+    for i in range(8):
+        gene_pool[i] = reduce_improve(troop_profile, 0)[0]  # generate gene pool with reduce-improve
+    for i in range(8, 10):
+        gene_pool[i] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)  # generate gene pool with random
+
+    print(gene_pool)
+
+    for i in range(10):
+        score.append(generous_mode(gene_pool[i], value_profile, 0) +
+                     greedy_mode(troop_profile, gene_pool[i], value_profile, 0))
+    print(score)
 
 if __name__ == "__main__":
     main()
-
