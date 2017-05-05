@@ -1,5 +1,5 @@
 import random
-import math
+import copy
 import statistics
 from collections import defaultdict
 
@@ -10,7 +10,7 @@ VALUE_TOTAL = int(input("Total Value: "))
 
 
 def partition(number, part):
-    answer = [0]*part
+    answer = [0] * part
     for i in range(0, number):
         answer[random.randrange(0, part)] += 1
     return answer
@@ -58,20 +58,24 @@ def generous_mode(troop_profile, value_profile, player):
         indifferent[item].append(i)
     indifferent = {k: v for k, v in indifferent.items() if len(v) > 1}  # thanks to stackoverflow
 
-    for x in range(len(indifferent.keys())):
-        for y in list(indifferent.values())[x]:
-            troop_profile_indifferent_total += troop_profile[y]
-            opponent_indifferent_total += value_profile[opponent][y]
+    if not indifferent:
+        for x in range(len(indifferent.keys())):
+            for y in list(indifferent.values())[x]:
+                troop_profile_indifferent_total += troop_profile[y]
+                opponent_indifferent_total += value_profile[opponent][y]
 
-        for y in list(indifferent.values())[x]:
-            opponent_indifferent.append((troop_profile[y] / troop_profile_indifferent_total)
+            for y in list(indifferent.values())[x]:
+                opponent_indifferent.append((troop_profile[y] / troop_profile_indifferent_total)
                                         + (value_profile[opponent][y] / opponent_indifferent_total))
-        score += statistics.stdev(opponent_indifferent)
-        opponent_indifferent.clear()
-        troop_profile_indifferent_total = 0
-        opponent_indifferent_total = 0  # Generous Mode Algorithm - to be determined
 
-    return -score
+            score += statistics.stdev(opponent_indifferent)
+            opponent_indifferent.clear()
+            troop_profile_indifferent_total = 0
+            opponent_indifferent_total = 0  # Generous Mode Algorithm - to be determined
+    else:
+        score = 1000
+
+    return - score
 
 
 def greedy_mode(troop_profile_init, troop_profile, value_profile, player):
@@ -80,10 +84,10 @@ def greedy_mode(troop_profile_init, troop_profile, value_profile, player):
     opponent = player ^ 1
     troop_profile_new[player] = troop_profile
     troop_profile_new[opponent] = troop_profile_init[opponent]
-    weight_greedy = 1 # greedy weight- to be determined by several tests
+    weight_greedy = 100  # greedy weight - to be determined by several tests
 
-    score += (game(troop_profile_new, value_profile)[player]
-                - game(troop_profile_init, value_profile)[player]) * weight_greedy
+    score += (game(troop_profile_new,
+                   value_profile)[player] - game(troop_profile_init, value_profile)[player]) * weight_greedy
     # add difference of score and multiply weight
 
     return score
@@ -94,31 +98,42 @@ def main():
     troop_profile[0] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
     troop_profile[1] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
 
-    # troop_profile = [[3, 0, 0], [0, 2, 1]]  # manually
+    # troop_profile = [[3, 0, 0], [0, 2, 1]]  # define manually
 
     value_profile = [[], []]
     value_profile[0] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
     value_profile[1] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
+
     for i in range(BATTLEFIELD_TOTAL):
         value_profile[0][i] += 1
         value_profile[1][i] += 1
 
-    # value_profile = [[2, 1, 1], [1, 1, 2]]  # manually
+    value_profile = [[7, 4, 1], [2, 5, 5]]  # define manually
 
-    gene_pool = [[], [], [], [], [], [], [], [], [], []]
+    gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(10)]
     score = []
 
-    for i in range(8):
-        gene_pool[i] = reduce_improve(troop_profile, 0)[0]  # generate gene pool with reduce-improve
-    for i in range(8, 10):
-        gene_pool[i] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)  # generate gene pool with random
+    print(value_profile)
 
-    print(gene_pool)
+    for j in range(1000):
+        player = j % 2
+        for i in range(8):
+            gene_pool[i] = reduce_improve(copy.deepcopy(troop_profile), player)[player]
+            # generate gene pool with reduce-improve
+        for i in range(8, 10):
+            gene_pool[i] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)  # generate gene pool with random)
 
-    for i in range(10):
-        score.append(generous_mode(gene_pool[i], value_profile, 0) +
-                     greedy_mode(troop_profile, gene_pool[i], value_profile, 0))
-    print(score)
+        for i in range(10):
+            score.append(generous_mode(gene_pool[i], value_profile, player)
+                         + greedy_mode(troop_profile, gene_pool[i], value_profile, player) + 1000)
+
+        # troop_profile[player] = random.choices(gene_pool, weights=score)[0]
+
+        troop_profile[player] = random.choices(gene_pool, weights=score, k=2)[0]  # potential error here.
+
+        print(troop_profile)
+        score.clear()
+
 
 if __name__ == "__main__":
     main()
