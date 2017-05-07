@@ -111,7 +111,7 @@ def main():
 
     # value_profile = [[10, 1, 1], [1, 5, 6]]  # define manually
 
-    gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(20)]
+    gene_pool = [[0 for col in range(BATTLEFIELD_TOTAL)] for row in range(GENE_POOL_SIZE)]
     score = []
 
     print(value_profile)
