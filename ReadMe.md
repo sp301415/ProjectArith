@@ -1,6 +1,8 @@
 # Solving Modified Blotto Game with Genetic Algorithm
 
-# Notation
+This is a document with python-style pseudocode to explain our algorithm.
+
+## Notation
 - Total battlefield number: `BATTLEFIELD_TOTAL`
 - Total troop number: `TROOP_TOTAL`
 - Gene pool size: `GENE_POOL_SIZE`
@@ -11,7 +13,8 @@
 - Opponent: `opponent`, equals to `player ^ 1`
 
 
-# Main
+## Main
+
     def main():
     
       while not end_condition :
@@ -22,7 +25,7 @@
       return troopProfile
 
 
-# Reduce_Improve
+## Reduce_Improve
 
 This step makes new genes from existing troop profile. 
  
@@ -42,7 +45,7 @@ This step makes new genes from existing troop profile.
       return troop_profile
 
 
-# Greedy_Mode
+## Greedy_Mode
 
 This step scores the difference of score between gene and initial troop profile.
 
@@ -57,7 +60,7 @@ This step scores the difference of score between gene and initial troop profile.
 
   
 
-# Generous_Mode
+## Generous_Mode
 
 This step exists to find PNE more easily; it is a special case. If there are indifferent values among player’s battlefield, to deploy troops more on battlefields that opponent’s value are low gets more score.
 
@@ -74,7 +77,7 @@ This step exists to find PNE more easily; it is a special case. If there are ind
       return score      
 
 
-# Gene_Selection
+## Gene_Selection
 
 This selects gene based on generous and greedy mode.
 
