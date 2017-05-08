@@ -13,15 +13,15 @@ This is a document with python-style pseudocode to explain our algorithm.
 - Opponent: `opponent`, equals to `player ^ 1`
 
 
-## Main
 
-    def main():
-    
       while not end_condition :
-        reduce_improve(troop_profile, player)
+        for i from 0 to int(GENE_POOL_SIZE * percentage):
+          set gene_pool[i] = reduce_improve(troop_profile, player)
+        for i from int(GENE_POOL_SIZE * percentage) to GENE_POOL_SIZE:
+          set gene_pool[i] = randomly partition TROOP_TOTAL to BATTLEFIELD_TOTAL
         gene_selection(troop_profile, gene_pool, value_profile, player)
         change player
-      
+
       return troopProfile
 
 
@@ -37,7 +37,10 @@ This step makes new genes from existing troop profile.
       for i from 0 to BATTLEFIELD_TOTAL:
         if troop_profile[player][i] > troop_profile[opponent][i] + 1 then:
           add troop_profile[player][i] - troop_profile[opponent][i] -1 to leftover
-          set troop_profile[player][i] = troop_profile[opponent][i] + 1
+          set troop_profile[player][i] = troop_pr
+## Main
+
+    def main():ofile[opponent][i] + 1
       
       for i from 0 to leftover:
         add 1 to troop_profile[player][random int from 0 to BATTLEFIELD_TOTAL]
