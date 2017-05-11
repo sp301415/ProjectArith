@@ -101,7 +101,7 @@ def main():
     troop_profile[0] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
     troop_profile[1] = partition(TROOP_TOTAL, BATTLEFIELD_TOTAL)
 
-    # troop_profile = [[3, 0, 0], [0, 2, 1]]  # define manually
+    # troop_profile = [[3, 0, 0], [0, 2, 1]]  # manually
 
     value_profile = [[], []]
     value_profile[0] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
@@ -111,7 +111,7 @@ def main():
         value_profile[0][i] += 1
         value_profile[1][i] += 1
 
-    # value_profile = [[7, 4, 1], [2, 5, 5]]  # define manually
+    # value_profile = [[7, 4, 1], [2, 5, 5]]  # manually
 
     score = []
 
