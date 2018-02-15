@@ -3,7 +3,6 @@ import copy
 import statistics
 from collections import defaultdict
 
-
 TROOP_TOTAL = int(input("Total Troops: "))
 BATTLEFIELD_TOTAL = int(input("Total Battlefield: "))
 VALUE_TOTAL = int(input("Total Value: "))
@@ -69,7 +68,7 @@ def generous_mode(troop_profile_player, value_profile, player):
             if troop_profile_indifferent_total != 0:
                 for y in list(indifferent.values())[x]:
                     opponent_indifferent.append((troop_profile_player[y] / troop_profile_indifferent_total)
-                                        + (value_profile[opponent][y] / opponent_indifferent_total))
+                                                + (value_profile[opponent][y] / opponent_indifferent_total))
 
                 score += statistics.stdev(opponent_indifferent)
                 opponent_indifferent.clear()
@@ -104,8 +103,8 @@ def main():
     # troop_profile = [[3, 0, 0], [0, 2, 1]]  # manually
 
     value_profile = [[], []]
-    value_profile[0] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
-    value_profile[1] = partition(VALUE_TOTAL-BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
+    value_profile[0] = partition(VALUE_TOTAL - BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
+    value_profile[1] = partition(VALUE_TOTAL - BATTLEFIELD_TOTAL, BATTLEFIELD_TOTAL)
 
     for i in range(BATTLEFIELD_TOTAL):
         value_profile[0][i] += 1
@@ -129,7 +128,7 @@ def main():
 
         for i in range(len(gene_pool)):
             score.append(pow(greedy_mode(troop_profile, gene_pool[i], value_profile, player) /
-                         generous_mode(gene_pool[i], value_profile, player), 3))
+                             generous_mode(gene_pool[i], value_profile, player), 3))
             if score[i] < 0:
                 score[i] = 0
 
